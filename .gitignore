@@ -1,0 +1,8 @@
+captures/
+client-backup/
+__pycache__/
+*.pyc
+*.o
+*.so
+snaps/
+.venv/

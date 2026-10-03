@@ -1,0 +1,20 @@
+{
+    "file_format_version": "1.2.0",
+    "layer": {
+        "name": "VK_LAYER_AESTERIA_overlay",
+        "type": "GLOBAL",
+        "api_version": "1.4.0",
+        "library_path": "/path/to/aesteria/src/inject/vk_overlay/libaesteria_overlay.so",
+        "implementation_version": "1",
+        "description": "AESTERIA in-game overlay for AION 2 (vkQueuePresentKHR draw)",
+        "functions": {
+            "vkNegotiateLoaderLayerInterfaceVersion": "aesteria_vkNegotiateLoaderLayerInterfaceVersion"
+        },
+        "enable_environment": {
+            "AESTERIA_OVERLAY": "1"
+        },
+        "disable_environment": {
+            "DISABLE_AESTERIA_OVERLAY": "1"
+        }
+    }
+}
