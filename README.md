@@ -56,6 +56,33 @@ Offsets are per client build. After a patch, re-derive with `tools/aesteria_regi
 than editing constants by hand — the registry finds classes by shape, so it survives patches
 that move things.
 
+## Privacy
+
+**No telemetry. Nothing here phones home.** Not on launch, not on a timer, not ever.
+
+- **No analytics, no usage statistics, no crash reporting, no version check, no licence check.**
+- **No account, character, or machine identifiers are collected** — because nothing is collected.
+- **Nothing leaves your machine.** These tools never open a network connection, to us or to anyone.
+  Don't take that on trust; it takes one command to check every mention of networking in the tree:
+
+  ```sh
+  grep -rn 'socket\|http[s]*://\|urlopen\|requests\.' tools src spikes
+  ```
+
+  Every hit is in `aesteria_netcap.py`, and every one of them *reads* — the game's own sockets out
+  of `/proc`, and `socket.inet_ntop` to format an address into text. No socket is ever created.
+- **Local files only.** Config and state live under `$XDG_CONFIG_HOME` and `$XDG_STATE_HOME`
+  (normally `~/.config/aesteria` and `~/.local/state/aesteria`), plus a launch log at
+  `/tmp/aesteria-launch.log`. Delete them and nothing remembers you.
+- **`aesteria_netcap.py` is the one tool that handles network data, and it is opt-in and local.**
+  It captures *your own* traffic to a file on *your own* disk, for inspecting the game's protocol.
+  Its default filter is deliberately narrow — the game's own endpoints — specifically so it does
+  not record your browsing, your mail, or the client's TLS connections. `--all` widens it, and
+  warns you when it does.
+
+This isn't a statement of intent you have to believe. It's a property of the source you're reading,
+and the whole source is here.
+
 ## Safety notes
 
 - Tools are read-only unless a mode says `--apply`. Writes go through `/proc/<pid>/mem`.

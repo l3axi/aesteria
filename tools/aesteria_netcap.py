@@ -2,21 +2,21 @@
 """aesteria_netcap — packet capture of a live AION 2 session, scoped to the game.
 
 WHY IT DISCOVERS INSTEAD OF BEING TOLD
-    The game's server address is not knowable in advance (it changes per session, and a
-    zone handoff moves it mid-session), and the interface is not the obvious one: on the host
-    the client's socket is bound to 10.2.0.2, the `the host` WireGuard tunnel. Capturing on
-    wlan0 or lanbr would record the tunnel's OUTER UDP -- encrypted, useless. Capturing on
-    the tunnel interface gets the game protocol itself.
+    The game's server address is not knowable in advance -- it changes per session, and a zone
+    handoff moves it mid-session. Nor is the interface the obvious one: if you route the game
+    through a VPN, the client's socket is bound to the tunnel, and capturing on your physical
+    NIC records the tunnel's OUTER UDP -- encrypted, and useless for reading the protocol.
+    Capturing on the interface the socket is actually bound to gets the game protocol itself.
 
-    So this reads the game process's own sockets out of /proc and builds the filter and the
-    interface from what is actually connected right now.
+    So this reads the game process's own sockets out of /proc and builds both the filter and the
+    interface from what is genuinely connected right now, instead of asking you to supply either.
 
-WHY THE FILTER IS NARROW BY DEFAULT
-    A blanket capture on that interface would record everything the operator does online, since the
-    tunnel carries it all. The default filter is the game's own non-TLS endpoints plus the
-    port range around them (so a zone handoff is still caught), which excludes browsing,
-    mail and the client's TLS auth/CDN connections. --all makes it wide, deliberately and
-    with a warning.
+WHY THE FILTER IS NARROW BY DEFAULT -- THIS IS A PRIVACY DECISION, NOT A CONVENIENCE ONE
+    A blanket capture on that interface would record everything you do online, since a tunnel
+    carries all of it. The default filter is the game's own non-TLS endpoints plus the port range
+    around them (so a zone handoff is still caught), which excludes your browsing, your mail, and
+    the client's own TLS auth/CDN connections. --all makes it wide, deliberately and with a
+    warning. Captures are written to your own disk and are never transmitted anywhere.
 
 TIER
     This is a read-only inspector: capture and offline analysis, never replay or injection.
